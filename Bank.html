@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transaction History</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        h2 {
+            margin-top: 0;
+        }
+        
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin-top: 10px;
+            border: 2px solid #007bff;
+            /* Add border to the table */
+        }
+        
+        table,
+        th,
+        td {
+            border: 1px solid #ccc;
+        }
+        
+        th,
+        td {
+            padding: 10px;
+            /* Increased padding for better spacing */
+            text-align: left;
+        }
+        
+        input[type="number"] {
+            width: 100px;
+            padding: 5px;
+            margin-right: 10px;
+            border: 2px solid #007bff;
+            /* Add border to input elements */
+            border-radius: 3px;
+        }
+        
+        button {
+            padding: 5px 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+        
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+
+</head>
+
+<body>
+    <div class="container">
+        <h2>Transaction History</h2>
+        <h3>Current Balance : </h3><span id="total-amount">0.00</span>
+        <table>
+            <thead>
+                <tr>
+                    <th>Type</th>
+                    <th>Amount</th>
+                </tr>
+            </thead>
+            <tbody id="transaction-table">
+            </tbody>
+        </table>
+    </div>
+
+    <div class="container">
+
+        <h2>Add Amount</h2>
+        <input type="number" id="add-amount-input">
+        <button onclick="addTransaction()">Add</button>
+
+    </div>
+
+    <div class="container">
+
+        <h2>Debit Amount</h2>
+        <input type="number" id="debit-amount-input">
+        <button onclick="debitTransaction()">Debit</button>
+
+    </div>
+
+    <script>
+        const transactions = [];
+        let totalAmount = 0;
+
+        function renderTransactions() {
+            const tableBody = document.getElementById("transaction-table");
+            tableBody.innerHTML = "";
+
+            for (const transaction of transactions) {
+                const row = document.createElement("tr");
+                const typeCell = document.createElement("td");
+                const amountCell = document.createElement("td");
+
+                typeCell.textContent = transaction.type;
+                amountCell.textContent = transaction.amount.toFixed(2);
+
+                row.appendChild(typeCell);
+                row.appendChild(amountCell);
+                tableBody.appendChild(row);
+            }
+
+            // Calculate and display the total amount
+            totalAmount = transactions.reduce((sum, transaction) => sum + transaction.amount, 0);
+            const totalAmountElement = document.getElementById("total-amount");
+            totalAmountElement.textContent = totalAmount.toFixed(2);
+        }
+
+        function addTransaction() {
+            const amount = parseFloat(document.getElementById("add-amount-input").value);
+            if (!isNaN(amount)) {
+                transactions.push({
+                    id: Math.random(),
+                    type: 'Add',
+                    amount
+                });
+                renderTransactions();
+            }
+        }
+
+        function debitTransaction() {
+            const amount = parseFloat(document.getElementById("debit-amount-input").value);
+            if (!isNaN(amount)) {
+                transactions.push({
+                    id: Math.random(),
+                    type: 'Debit',
+                    amount: -amount
+                });
+                renderTransactions();
+            }
+        }
+
+        renderTransactions(); // Initial rendering
+    </script>
+</body>
+
+</html>
